@@ -14,9 +14,16 @@ dasgoclient --query 'file dataset=<Dataset Name>' > RunFiles.txt
 ```
 You can either run over TauID 2p1 or 2p5, by default 2p5 is used. If you need to change the tau ID make changes in the runscript.py. To prepare jobs for use the following command lines,
 ```
-python3 runscript.py RunFiles.txt outputfile 5
+python3 runscript.py [input file dir] [input file name] [output file prefix] [split index]
 ```
-which prepare shell script running over dataset with files splited by 5. You can change the splitting according to you, it is more safe to use maximum splitting range of 10. You can submit jobs by
+which prepare shell script running over dataset with files splited by 5. You can change the splitting according to you, it is more safe to use maximum splitting range of 10. 
+One example with Run2023C can be:
+
+``` 
+python3 runscript.py /afs/cern.ch/user/v/vdamante/CMSSW_12_6_5/src/TauMonitoringTool/config/Run_2022D/ Run3Files_2022D.txt /eos/cms/store/group/phys_tau/vdamante/picoNtuples/Run2022D/ 10 
+```
+
+You can submit jobs by
 ```
 bash localjob_submit.sh
 ```
@@ -35,7 +42,7 @@ python3 plotter_from_ntuplizer.py \
 
 Above, the `input` field is all available NanoAOD Muon2022D data.
 The `channel` is a shorthand to select a supported tau HLT. Available channels are
-["ditau", "mutau", "etau",                           <- standard tau monitoring paths, etau not yet implemented
+["ditau", "mutau", "etau", "singletau",               <- standard tau monitoring paths, etau not yet implemented
 "VBFasymtau_uppertauleg", "VBFasymtau_lowertauleg",  <- two paths to monitor the new VBF asym ditau path, seeded by an L1 IsoTau
 "ditaujet_tauleg", "ditaujet_jetleg",                <- two paths to monitor the new ditau+jet path
 "VBFditau_old", "VBFditau_Run3_tauleg"]              <- two extra paths with implemented support
