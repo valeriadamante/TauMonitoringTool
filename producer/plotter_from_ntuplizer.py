@@ -10,7 +10,7 @@ from RooPlottingTool import *
 
 parser = argparse.ArgumentParser(description='Skim full tuple.')
 parser.add_argument('--input', required=True, type=str, nargs='+', help="input files")
-parser.add_argument('--channel', required=True, type=str, 
+parser.add_argument('--channel', required=True, type=str,
        help="ditau, mutau, etau, \
              VBFasymtau_uppertauleg, VBFasymtau_lowertauleg, \
              ditaujet_tauleg, ditaujet_jetleg, \
@@ -58,6 +58,11 @@ def obtain_histograms(df, channel, iseta, plottingVariable, additional_selection
         elif channel == 'mutau':
             h_num_os = df.Filter("pass_mutau >= 0 && \
                 HLT_IsoMu20_eta2p1_LooseDeepTauPFTauHPS27_eta2p1_CrossL1 == 1").Histo1D( \
+                CreateHistModel("numerator", iseta), plottingVariable, 'new_weight')
+
+        elif channel == 'singletau':
+            h_num_os = df.Filter("pass_mutau >= 0 && \
+                HLT_IsoMu24_eta2p1_LooseDeepTauPFTauHPS180_eta2p1 == 1").Histo1D( \
                 CreateHistModel("numerator", iseta), plottingVariable, 'new_weight')
 
         elif channel == 'VBFasymtau_uppertauleg':
