@@ -29,7 +29,7 @@ else:
 
     for key in list_dict.keys():
         finalFile = os.path.join(input_dir, f'{key}.txt')
-        outFile = os.path.join(outfile_prefix, key )
+        outFile = f'{outfile_prefix}_{key}'
         with open(finalFile,'w') as outfile:
             outfile.writelines(list_dict[key])
             new_lines.append("python3 picoNtuplizer.py -v 2p5 -o "+outFile+" -i "+finalFile+"\n")
