@@ -5,7 +5,7 @@
 #include "TLatex.h"
 #include "Math/Vector4D.h"
 #include "TStyle.h"
- 
+
 using namespace ROOT;
 using namespace ROOT::VecOps;
 using RNode = ROOT::RDF::RNode;
@@ -94,12 +94,12 @@ int TauIndex(UInt_t ntau, Vec_t pt_1, Vec_t eta_1, Vec_t phi_1, Vec_t mass_1, Ve
       if(dz_1[itau] > 0.2)continue;
       if(deltaR(tau.Eta(), muon_p4.Eta(), tau.Phi(), muon_p4.Phi()) < 0.5) continue;
       if(tau.Pt() < 18) continue;
-      if(std::fabs(tau.Eta()) > 2.1) continue; 
+      if(std::fabs(tau.Eta()) > 2.1) continue;
       if(Tau_rawIsodR03[itau] > tau_iso){
         tau_iso = Tau_rawIsodR03[itau];
         tau_index = itau;
       }
-    }  
+    }
   }
   return tau_index;
 }
@@ -116,7 +116,7 @@ int JetIndex(UInt_t njet, Vec_t pt_1, Vec_t eta_1, Vec_t phi_1, Vec_t mass_1, Ve
       if (deltaR(jet.Eta(), tau_p4.Eta(), jet.Phi(), tau_p4.Phi()) < 0.5) continue;
       if (jet.Pt() < 18) continue;
       jet_index = ijet;
-    }  
+    }
   }
   return jet_index;
 }
@@ -128,13 +128,29 @@ int PassDiTauFilter(UInt_t ntrig, Vec_i trig_id, Vec_i trig_bits, Vec_t trig_pt,
     const ROOT::Math::PtEtaPhiMVector trig(trig_pt[it],trig_eta[it],trig_phi[it],0);
     float dR = deltaR(trig.Eta(),tau_eta,trig.Phi(),tau_phi);
     if (dR < 0.5){
-      if((trig_bits[it] & 512) != 0 && (trig_bits[it] & 1024) != 0 && trig_id[it] == 15){ 
+      if((trig_bits[it] & 512) != 0 trig_pt[it]>35 && std::abs(trig_eta[it])<2.1 && trig_id[it] == 15){
         return it;
       }
     }
   }
   return -1;
 }
+
+int PassSingleTauFilter(UInt_t ntrig, Vec_i trig_id, Vec_i trig_bits, Vec_t trig_pt, Vec_t trig_eta, Vec_t trig_phi, float tau_pt, float tau_eta, float tau_phi) {
+  if (tau_pt <= 0)
+    return -1;
+  for(int it=0; it < ntrig; it++){
+    const ROOT::Math::PtEtaPhiMVector trig(trig_pt[it],trig_eta[it],trig_phi[it],0);
+    float dR = deltaR(trig.Eta(),tau_eta,trig.Phi(),tau_phi);
+    if (dR < 0.5){
+      if((trig_bits[it] & 512) != 0 && std::abs(trig_eta[it])<2.1  && trig_id[it] == 15 && trig_pt[it]>180){
+        return it;
+      }
+    }
+  }
+  return -1;
+}
+
 
 int PassDiTauJetFilter(UInt_t ntrig, Vec_i trig_id, Vec_i trig_bits, Vec_t trig_pt, Vec_t trig_eta, Vec_t trig_phi, float jet_pt, float jet_eta, float jet_phi){
   if (jet_pt <= 0)
@@ -160,7 +176,7 @@ int PassMuTauFilter(UInt_t ntrig,Vec_i trig_id,Vec_i trig_bits,Vec_t trig_pt,Vec
     const ROOT::Math::PtEtaPhiMVector trig(trig_pt[it],trig_eta[it],trig_phi[it],0);
     float dR = deltaR(trig.Eta(),tau_eta,trig.Phi(),tau_phi);
     if (dR < 0.5){
-      if((trig_bits[it] & 512) != 0  && trig_id[it] == 15){ 
+      if((trig_bits[it] & 512) != 0 && trig_id[it] == 15 && std::abs(trig_eta[it])<2.1  && trig_pt[it]>27){
           return it;
       }
     }
@@ -169,12 +185,12 @@ int PassMuTauFilter(UInt_t ntrig,Vec_i trig_id,Vec_i trig_bits,Vec_t trig_pt,Vec
 }
 
 int PassElTauFilter(UInt_t ntrig,Vec_i trig_id,Vec_i trig_bits,Vec_t trig_pt,Vec_t trig_eta,Vec_t trig_phi,Vec_t trig_l1pt,Vec_i trig_l1iso,float tau_pt,float tau_eta,float tau_phi){
-   
+
   for(int it=0; it < ntrig; it++){
     const ROOT::Math::PtEtaPhiMVector trig(trig_pt[it],trig_eta[it],trig_phi[it],0);
     float dR = deltaR(trig.Eta(),tau_eta,trig.Phi(),tau_phi);
     if (dR < 0.5){
-      if((trig_bits[it] & 512) != 0  && trig_id[it] == 15){ 
+      if((trig_bits[it] & 512) != 0 && std::abs(trig_eta[it])<2.1 && trig_pt[it] > 35 && trig_id[it] == 15){
         if(trig_l1pt[it] > 26 && trig_l1iso[it] > 0)
           return it;
       }
@@ -226,7 +242,7 @@ float TauL1_PT(UInt_t ntrig,Vec_i trig_id,Vec_i trig_bits,Vec_t trig_l1pt,Vec_t 
      const ROOT::Math::PtEtaPhiMVector trig(trig_pt[it],trig_eta[it],trig_phi[it],0);
      float dR = deltaR(trig.Eta(),tau_eta,trig.Phi(),tau_phi);
      if (dR < 0.5){
-       if( trig_id[it] == 15){ 
+       if( trig_id[it] == 15){
 	 taul1_pt = trig_l1pt[it];
       }
    }

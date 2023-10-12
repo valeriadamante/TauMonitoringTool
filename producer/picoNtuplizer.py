@@ -3,7 +3,7 @@ import sys
 
 import ROOT
 
-# Enable multi-threading                                                                                                                                                                                    
+# Enable multi-threading
 # ROOT.ROOT.EnableImplicitMT()
 ROOT.gROOT.SetBatch(True)
 
@@ -114,6 +114,12 @@ def obtain_picontuple(df):
 
     branches += ["pass_ditau"]
 
+    df = df.Define("pass_singletau",
+        "PassSingleTauFilter(nTrigObj, TrigObj_id, TrigObj_filterBits, TrigObj_pt, TrigObj_eta, TrigObj_phi,\
+        getFloatValue(Tau_pt, Tau_Index), getFloatValue(Tau_eta, Tau_Index), getFloatValue(Tau_phi, Tau_Index))")
+
+    branches += ["pass_singletau", "HLT_IsoMu24_eta2p1_LooseDeepTauPFTauHPS180_eta2p1" ]
+
     df = df.Define("Jet_Index", "JetIndex(nJet, Jet_pt, Jet_eta, Jet_phi, Jet_mass, Jet_jetId, muon_p4, tau_p4)")
     branches += ["Jet_Index", "HLT_IsoMu24_eta2p1_MediumDeepTauPFTauHPS30_L2NN_eta2p1_CrossL1", "HLT_IsoMu24_eta2p1_MediumDeepTauPFTauHPS35_L2NN_eta2p1_CrossL1"]
 
@@ -142,8 +148,8 @@ def obtain_picontuple(df):
     #branches += ["pass_VBFditau_Run3_tauleg", "HLT_IsoMu24_MediumDeepTauPFTauHPS20_eta2p1_SingleL1"]
 
     ## mutau_Run2
-    df = df.Define("pass_mutau_Run2", PassMuTauFilter)
-    branches += ["pass_mutau_Run2", "HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1"]
+    #df = df.Define("pass_mutau_Run2", PassMuTauFilter)
+    #branches += ["pass_mutau_Run2", "HLT_IsoMu20_eta2p1_TightChargedIsoPFTauHPS27_eta2p1_TightID_CrossL1"]
 
     ## ditaujet_jetleg
     df = df.Define("pass_ditau_jet",
@@ -193,7 +199,7 @@ if __name__ == '__main__':
         for line in f:
           line = line.replace('\n',"") # trim newline character
           if "root://" not in line and not line.startswith("/eos"):
-            inputFiles_run3.append('root://cmsxrootd.fnal.gov/'+line) # prepend with redirector
+            inputFiles_run3.append('root://xrootd-cms.infn.it/'+line) # prepend with redirector
           else:
             inputFiles_run3.append(line)
       print(inputFiles_run3)
@@ -216,7 +222,7 @@ if __name__ == '__main__':
         branches += [
             "Tau_genPartFlav", "Tau_genPartIdx",
             "Muon_genPartIdx", "Muon_genPartFlav",
-            #"Electron_genPartIdx", "Electron_genPartFlav", 
+            #"Electron_genPartIdx", "Electron_genPartFlav",
             "Jet_genJetIdx",
             "genWeight", "Pileup_nTrueInt"
         ]
