@@ -128,7 +128,7 @@ int PassDiTauFilter(UInt_t ntrig, Vec_i trig_id, Vec_i trig_bits, Vec_t trig_pt,
     const ROOT::Math::PtEtaPhiMVector trig(trig_pt[it],trig_eta[it],trig_phi[it],0);
     float dR = deltaR(trig.Eta(),tau_eta,trig.Phi(),tau_phi);
     if (dR < 0.5){
-      if((trig_bits[it] & 512) != 0 trig_pt[it]>35 && std::abs(trig_eta[it])<2.1 && trig_id[it] == 15){
+      if((trig_bits[it] & 512) != 0 &&  trig_pt[it]>35 && std::abs(trig_eta[it])<2.1 && trig_id[it] == 15){
         return it;
       }
     }
